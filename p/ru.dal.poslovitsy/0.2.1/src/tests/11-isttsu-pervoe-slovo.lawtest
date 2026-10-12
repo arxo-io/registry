@@ -1,0 +1,13 @@
+language "law.core" version "0.2";
+package ru.dal.poslovitsy version "0.2.1";
+namespace "urn:ru:dal:clir:poslovitsy";
+
+test "urn:query:dp-isttsu-pervoe-slovo" {
+    given {
+        assert "dp15-1": istets(entity_ref("urn:ru:dal:clir:poslovitsy#Frol"), entity_ref("urn:ru:dal:clir:poslovitsy#DeloOZemle")) { origin case_input; }
+    }
+    evaluate truth(pervoe_slovo(entity_ref("urn:ru:dal:clir:poslovitsy#Frol"), entity_ref("urn:ru:dal:clir:poslovitsy#DeloOZemle")));
+    expect result_kind == PROPOSITION;
+    expect truth_status == TRUE_ONLY;
+    expect evaluation_status == COMPUTED;
+}

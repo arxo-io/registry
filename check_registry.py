@@ -8,10 +8,14 @@ here as a vendored copy via the exporter and is never edited by hand.
 
 Three checks:
 
-1. **Schema and addressing.** Every p/<name>/<version>.json is valid against
-   the LockedPackage shape (lockfile.schema.json), name/version match the
-   path, registryId matches registry.json, resolverUri follows the
-   registry://<id>/<name>/<version> convention.
+1. **Schema and addressing.** Every p/<name>/<version>.json is valid — against
+   package-descriptor.schema.json when it declares descriptorFormat 0.2, and
+   against the older LockedPackage shape (lockfile.schema.json) when it does
+   not. Name/version match the path, registryId matches registry.json,
+   resolverUri follows the registry://<id>/<name>/<version> convention. The
+   version index p/<name>/versions.json must list exactly the versions that
+   are actually published, and a descriptor's declared resources must have
+   their bytes under r/<algo>/<hex>.
 2. **Bytes.** The descriptor's contentHash == sha256 of the sibling
    p/<name>/<version>/package.lawir.json. Package bytes are canonical (§208),
    so hashing the downloaded file is all a consumer needs. When a source
@@ -22,7 +26,9 @@ Three checks:
    this repository holds integrity, not semantics.
 3. **Immutability** (with --base <git-ref>): the diff under p/ relative to
    the base may contain additions only. Modifying or deleting a published
-   file fails; a bad version is fixed by publishing the next version.
+   file fails; a bad version is fixed by publishing the next version. The
+   one exception is p/<name>/versions.json: it is an index of what exists,
+   not a publication, so a new release necessarily rewrites it.
 
 Dependencies: python3 >= 3.9, jsonschema, git (for --base).
 """
@@ -40,10 +46,68 @@ import jsonschema
 ROOT = Path(__file__).resolve().parent
 
 
-def descriptor_validator() -> jsonschema.Draft202012Validator:
+#: Index of published versions; rewritten by every release, hence mutable.
+VERSIONS_FILE = "versions.json"
+
+
+def legacy_validator() -> jsonschema.Draft202012Validator:
     schema = json.loads((ROOT / "lockfile.schema.json").read_text(encoding="utf-8"))
     return jsonschema.Draft202012Validator(
         {"$ref": "#/$defs/LockedPackage", "$defs": schema["$defs"]})
+
+
+def descriptor_validator() -> jsonschema.Draft202012Validator:
+    schema = json.loads((ROOT / "package-descriptor.schema.json").read_text(encoding="utf-8"))
+    return jsonschema.Draft202012Validator(schema)
+
+
+def versions_validator() -> jsonschema.Draft202012Validator:
+    schema = json.loads((ROOT / "package-descriptor.schema.json").read_text(encoding="utf-8"))
+    return jsonschema.Draft202012Validator(
+        {"$ref": "#/$defs/PackageVersions", "$defs": schema["$defs"]})
+
+
+def check_blobs(errors: list[str]) -> int:
+    """Every r/<algo>/<hex> must hash to its own name: the consumer trusts the
+    address, so a blob that does not match it is a silently wrong resource."""
+    checked = 0
+    for blob in sorted((ROOT / "r").rglob("*")):
+        if not blob.is_file():
+            continue
+        algo, name = blob.parent.name, blob.name
+        rel = blob.relative_to(ROOT)
+        if algo != "sha256":
+            errors.append(f"{rel}: unsupported digest directory {algo!r}")
+            continue
+        actual = hashlib.sha256(blob.read_bytes()).hexdigest()
+        if actual != name:
+            errors.append(f"{rel}: bytes hash to {actual}")
+        checked += 1
+    return checked
+
+
+def check_versions_index(name: str, published: set[str], errors: list[str]) -> None:
+    path = ROOT / "p" / name / VERSIONS_FILE
+    rel = path.relative_to(ROOT)
+    if not path.exists():
+        # Legacy registries predate the index; a 0.2 consumer then cannot pick
+        # "the latest stable" and must be told to name the version explicitly.
+        return
+    try:
+        index = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"{rel}: not JSON: {exc}")
+        return
+    for err in sorted(versions_validator().iter_errors(index), key=str):
+        errors.append(f"{rel}: schema: {err.message}")
+        return
+    if index.get("name") != name:
+        errors.append(f"{rel}: index names {index.get('name')!r}, path says {name!r}")
+    listed = set(index.get("versions", []))
+    for version in sorted(listed - published):
+        errors.append(f"{rel}: lists {version}, which is not published")
+    for version in sorted(published - listed):
+        errors.append(f"{rel}: does not list published version {version}")
 
 
 def check_immutability(base: str, errors: list[str]) -> None:
@@ -56,6 +120,8 @@ def check_immutability(base: str, errors: list[str]) -> None:
         return
     for line in proc.stdout.splitlines():
         status, _, path = line.partition("\t")
+        if Path(path).name == VERSIONS_FILE:
+            continue
         if status[:1] != "A":
             errors.append(f"immutability: {path} — status {status}, "
                           "only additions are allowed under p/")
@@ -104,9 +170,11 @@ def main() -> int:
     errors: list[str] = []
     registry_id = json.loads((ROOT / "registry.json")
                              .read_text(encoding="utf-8"))["registryId"]
-    validator = descriptor_validator()
+    legacy, modern = legacy_validator(), descriptor_validator()
 
-    descriptors = sorted((ROOT / "p").glob("*/*.json"))
+    descriptors = [p for p in sorted((ROOT / "p").glob("*/*.json"))
+                   if p.name != VERSIONS_FILE]
+    published: dict[str, set[str]] = {}
     checked = 0
     for desc_path in descriptors:
         name, version = desc_path.parent.name, desc_path.stem
@@ -116,6 +184,7 @@ def main() -> int:
         except json.JSONDecodeError as exc:
             errors.append(f"{rel}: not JSON: {exc}")
             continue
+        validator = modern if desc.get("descriptorFormat") else legacy
         for err in sorted(validator.iter_errors(desc), key=str):
             errors.append(f"{rel}: schema: {err.message}")
         if desc.get("name") != name or desc.get("version") != version:
@@ -136,7 +205,24 @@ def main() -> int:
             if desc.get("contentHash") != digest:
                 errors.append(f"{rel}: contentHash {desc.get('contentHash')}, "
                               f"actual bytes {digest}")
+        if desc.get("worldHash"):
+            world_path = desc_path.parent / version / "world.lawir.json"
+            if not world_path.exists():
+                errors.append(f"{rel}: worldHash declared, but "
+                              f"{world_path.relative_to(ROOT)} is missing")
+            else:
+                digest = "sha256:" + hashlib.sha256(world_path.read_bytes()).hexdigest()
+                if desc["worldHash"] != digest:
+                    errors.append(f"{rel}: worldHash {desc['worldHash']}, actual bytes {digest}")
+        for resource in desc.get("resources", []):
+            digest = str(resource.get("contentHash", ""))
+            algo, _, hex_digest = digest.partition(":")
+            blob = ROOT / "r" / algo / hex_digest
+            if not hex_digest or not blob.exists():
+                errors.append(f"{rel}: resource {resource.get('id')!r} declares "
+                              f"{digest}, but r/{algo}/{hex_digest} is missing")
         check_source_bundle(desc_path.parent / version, str(rel), errors)
+        published.setdefault(name, set()).add(version)
         checked += 1
 
     # Bytes without a descriptor are a defect too: an unaddressable publication.
@@ -146,13 +232,17 @@ def main() -> int:
             errors.append(f"{package_path.relative_to(ROOT)}: missing descriptor "
                           f"{desc_path.relative_to(ROOT)}")
 
+    for name, versions in sorted(published.items()):
+        check_versions_index(name, versions, errors)
+    blobs = check_blobs(errors)
+
     if args.base:
         check_immutability(args.base, errors)
 
     for line in errors:
         print(f"FAIL {line}", file=sys.stderr)
     immut = f", immutability against {args.base}" if args.base else ""
-    print(f"check_registry: {checked} publications{immut} — "
+    print(f"check_registry: {checked} publications, {blobs} resource blobs{immut} — "
           + ("FAIL" if errors else "PASS"))
     return 1 if errors else 0
 

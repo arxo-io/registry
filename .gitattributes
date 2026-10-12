@@ -9,3 +9,6 @@
 # CLIR и перечни исходников порождены генератором: диффы сворачиваются.
 *.lawir.json linguist-generated=true
 source.json linguist-generated=true
+
+# Исходники публикаций хранятся байт в байт: source.json держит sha256 каждого файла, перевод строк не нормализуется.
+p/**/src/** -text
