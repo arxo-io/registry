@@ -1,0 +1,149 @@
+{
+  "files": [
+    {
+      "path": "01-sud.law",
+      "sha256": "62f6aceeaac877e3379fdc052d8362b704934804b83c61372e9f5fa8bd2491f5"
+    },
+    {
+      "path": "02-poslukh.law",
+      "sha256": "24be770a413c512b93c4a5e100a8542984eae0b0e1823df80041944e812caa78"
+    },
+    {
+      "path": "03-otvet.law",
+      "sha256": "b52de18156f5262ec4086df8a8109417d4cc02d1543755e08d4af4848c7b17db"
+    },
+    {
+      "path": "04-vladenie.law",
+      "sha256": "dfb9fc47c3f1e95bf663e42a4c740e8b9f3f481feb4fbd427fcf025a4a53a8a1"
+    },
+    {
+      "path": "05-prezumptsiya.law",
+      "sha256": "8694902d6f6176bc95263cef000a2e8ec92105549248f2afab67c6a41a081166"
+    },
+    {
+      "path": "06-ugovor.law",
+      "sha256": "31494a1715ce3d7dfa9b54f676ec67aeabcc797384158c53fa1a4c988b5ff050"
+    },
+    {
+      "path": "07-kara.law",
+      "sha256": "c2e37fcf222fbf7b001fc17ec22fabe73778656a61af08ec81066f61841dc1c4"
+    },
+    {
+      "path": "08-dokazatelstva.law",
+      "sha256": "aab514e1aff5b246c7df1a0f2a408419d1de9c7d844ab5d87037a8af96557e7f"
+    },
+    {
+      "path": "law.lock",
+      "sha256": "87a82cc115e764105d0be8ea917791206d954bf885ab41f7a4950256ae055ff8"
+    },
+    {
+      "path": "law.toml",
+      "sha256": "40cee7e2849263fbd4839c6128e26956f6079094376a514a7468a00946316611"
+    },
+    {
+      "path": "package-info.json",
+      "sha256": "ca517f610bbea854a8f788856ca27e84f77b70eac400a2a5ac5434e1426a74b6"
+    },
+    {
+      "path": "package.law",
+      "sha256": "58e6c3f922a8d1417fc3b3fcac24914c19b11e9ae4e67cae60f69b80c6af174b"
+    },
+    {
+      "path": "sources.law",
+      "sha256": "3c6939ce997684a7f1944e4e98c50a0a77d9e38ecec8d94ca64261879938d4b1"
+    },
+    {
+      "path": "sources/poslovitsy/kara-priznanie.txt",
+      "sha256": "ca07903628f4c4c5c89bb2f5962a3cb3327aba8710a8aa58d78e4a14583f530a"
+    },
+    {
+      "path": "sources/poslovitsy/pravda-nepravda.txt",
+      "sha256": "5ecb4a85f795e2f2354a5d8d39122c226c4a947c77195a4097a7f9ae569b63ce"
+    },
+    {
+      "path": "sources/poslovitsy/sud-pravda.txt",
+      "sha256": "d4f53c5eceea21df0a7a1efa2fef9976cd7ffb983dae3e6599d327f9d7bad6c1"
+    },
+    {
+      "path": "sources/poslovitsy/uslovie-obman.txt",
+      "sha256": "f8f99c31a5790b9412fb3f38e01f8585e5b481b6bde091138cab224ab0eb4f4d"
+    },
+    {
+      "path": "tests/01-osuzhdyonnomu-kazn-dopustima.lawtest",
+      "sha256": "c0edad55ab060692f05f6dc3952b46fb6b812deeecbfb4d7d1a6f49ffad8dda7"
+    },
+    {
+      "path": "tests/02-bez-suda-kazn-nedopustima.lawtest",
+      "sha256": "734d99ef78340bd338634368c5239ec1fb8c240e355f41e92b4ed9b5618f2f63"
+    },
+    {
+      "path": "tests/03-kholop-na-boyarina-ne-poslukh.lawtest",
+      "sha256": "a9fb5ed306180a7446775674f3fe96f08bd8c1228bcc0b091dc748a4c9c08c19"
+    },
+    {
+      "path": "tests/04-kholop-na-kholopa-poslukh.lawtest",
+      "sha256": "da9939bac31aa57c8d95aa7d786b35f793b09c0ca839deb1b4615e876364cbc2"
+    },
+    {
+      "path": "tests/05-brat-bratu-golovoy.lawtest",
+      "sha256": "06558753c3288c47cf83165989f7e745a619664309473464f3c076d02d8d8d40"
+    },
+    {
+      "path": "tests/06-ne-poyman-ne-vor.lawtest",
+      "sha256": "3dd047513c3a782530e63d60bd9334171ec8f191206277843513ba1a270cf176"
+    },
+    {
+      "path": "tests/07-poyman-prezumptsiya-oprokinuta.lawtest",
+      "sha256": "36947577dbf98740a92a2f5f1e6f67d7fda2be52d9df72121b90a660512a89e9"
+    },
+    {
+      "path": "tests/08-ugovor-bez-deneg-both.lawtest",
+      "sha256": "2d75429d8d2352366cf1a8194c2b993a59356c2fa8060f26b8838f7e53172658"
+    },
+    {
+      "path": "tests/09-povinnuyu-golovu-mech-ne-sechet.lawtest",
+      "sha256": "b4393389e5150070db426bb163b917c017c70f5a45cfad43d4d79b616da1f753"
+    },
+    {
+      "path": "tests/10-menshoy-syn-na-kornyu.lawtest",
+      "sha256": "6657e7d056e9812d3581f44856cc4df2e88837b4fd2306014adf6149a09c5ab3"
+    },
+    {
+      "path": "tests/11-isttsu-pervoe-slovo.lawtest",
+      "sha256": "7d1c2f647901cbb23f7e6a261f02f4d7fa02e71ef6e974ca2c5fc6c1c53443a7"
+    },
+    {
+      "path": "tests/12-otvetchiku-poslednee-slovo.lawtest",
+      "sha256": "ac77901fff6ff433ff392e82f34486bf3299953ff797a8e146a09cbb9843d7fa"
+    },
+    {
+      "path": "tests/13-lezhachego-ne-byut.lawtest",
+      "sha256": "4171b9bbe48d7e590c79c11f1feb86204e34f67edaa5cc85fdc71f9b6c6789bb"
+    },
+    {
+      "path": "tests/14-chuzhoe-ispolnenie-ne-derzhit-slovo.lawtest",
+      "sha256": "ba895c11993e7afc9156f8fe352794a1bcc54b7f1b76334a8e2992f42c56e939"
+    },
+    {
+      "path": "tests/15-rodovaya-otvetstvennost-bez-starogo-obychaya.lawtest",
+      "sha256": "c81bd43f19998cf909437d9c01dad42fcca3f802c8cf02f360eed8949b5a961a"
+    },
+    {
+      "path": "tests/16-menshoy-syn-vne-krestyanskogo-hozyaystva.lawtest",
+      "sha256": "1bf6a2665ee45effd5b3a00703091237b69ff1c4dd8d3525cfb2577842c0f33c"
+    },
+    {
+      "path": "tests/17-neizvestnost-oplaty-ne-neuplata.lawtest",
+      "sha256": "31ae809e062e391ae11b605497acb442cb3ecca6ebe8aef65fb506ed47ecbe71"
+    },
+    {
+      "path": "tests/18-proshchennaya-vina-ne-karaetsya.lawtest",
+      "sha256": "0645e47421fd8851c3c49b270139444a40147b875ef1d67a716a444d02b3947a"
+    },
+    {
+      "path": "tests/poslovitsy.lawtest",
+      "sha256": "1f682dbec6fc203ae6f7a5e8c0d87808355a00578eabb213107b902341493cfb"
+    }
+  ],
+  "omitted": []
+}

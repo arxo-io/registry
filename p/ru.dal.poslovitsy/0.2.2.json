@@ -1,0 +1,15 @@
+{
+ "contentHash": "sha256:335970466075c2b52fc01cb92e1674cfc1bbca6aa5b587df0a1061ee86a7f720",
+ "dependencies": [],
+ "descriptorFormat": "law.package-descriptor/0.2",
+ "features": [
+  "core-executable"
+ ],
+ "languageSemantics": "law.core/0.2.11",
+ "name": "ru.dal.poslovitsy",
+ "namespace": "urn:ru:dal:clir:poslovitsy",
+ "registryId": "arxo",
+ "resolverUri": "registry://arxo/ru.dal.poslovitsy/0.2.2",
+ "version": "0.2.2",
+ "worldHash": "sha256:335970466075c2b52fc01cb92e1674cfc1bbca6aa5b587df0a1061ee86a7f720"
+}

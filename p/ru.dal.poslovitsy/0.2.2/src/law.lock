@@ -1,0 +1,15 @@
+{
+  "dependencyEdges": [],
+  "languageSemantics": "law.core/0.2.11",
+  "lockVersion": "0.4",
+  "packages": [],
+  "resolutionHash": "sha256:4b264065afe8fd5de7b96ce86d0b282fbbecf47cf12378d29ae8dfd4429cf2df",
+  "resources": [],
+  "root": {
+    "artifactHash": "sha256:335970466075c2b52fc01cb92e1674cfc1bbca6aa5b587df0a1061ee86a7f720",
+    "name": "ru.dal.poslovitsy",
+    "namespace": "urn:ru:dal:clir:poslovitsy",
+    "sourceHash": "sha256:e5308d2c95ff9ce085521dd94bb2f50194b55e3d7ba8efa525815e36ccf7614b",
+    "version": "0.2.2"
+  }
+}
